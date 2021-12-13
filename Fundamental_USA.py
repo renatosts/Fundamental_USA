@@ -6,6 +6,8 @@ from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 from pandas_datareader import data as pdr
 import yfinance as yf
+import requests
+
 
 # SETTING PAGE CONFIG TO WIDE MODE
 st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
@@ -17,22 +19,19 @@ def getFile(f):
     return df
 
 @st.cache(persist=True)
-def getDataProcessamento(f_proc):
-    with open(f_proc) as f:
-        ultima_atualizacao = f.readline()
+def getDataProcessamento(url):
+    response = requests.get(url)
+    ultima_atualizacao = response.text
     return ultima_atualizacao
 
-f = 'https://raw.githubusercontent.com/renatosts/SEC_EDGAR_USA/00e67ba9696aae346cd936291b037b5423459b86/DadosFinanceirosEUA.csv?token=AS4Q2LNWBYHL3MJO6CX6JDLBW22Z6'
-#f = r'C:\Users\Renato\Documents\_Projetos Github\SEC_EDGAR_USA\DadosFinanceirosEUA.csv'
+f = 'https://raw.githubusercontent.com/renatosts/Fundamental_USA/main/DadosFinanceirosEUA.csv'
 financ = getFile(f)
 
-f = 'https://raw.githubusercontent.com/renatosts/SEC_EDGAR_USA/main/submissions.csv?token=AS4Q2LLYTEOOKNIJUUY746TBW23ES'
-#f = r'C:\Users\Renato\Documents\_Projetos Github\SEC_EDGAR_USA\submissions.csv'
+f = 'https://raw.githubusercontent.com/renatosts/Fundamental_USA/main/submissions.csv'
 submissions = getFile(f)
 
-f = 'https://raw.githubusercontent.com/renatosts/SEC_EDGAR_USA/main/processamento.txt?token=AS4Q2LIM7WTJG7OARFEXI5LBW23G6'
-#f = r'C:\Users\Renato\Documents\_Projetos Github\SEC_EDGAR_USA\processamento.txt'
-ultima_atualizacao = getDataProcessamento(f)
+url = 'https://raw.githubusercontent.com/renatosts/Fundamental_USA/main/processamento.txt'
+ultima_atualizacao = getDataProcessamento(url)
 
 st.sidebar.write(f"Last update: {ultima_atualizacao}")
 
@@ -47,9 +46,6 @@ if check_nasdaq100:
 check_reit = st.sidebar.checkbox("Only REIT")
 if check_reit:
     financ = financ[financ.sicDescription == 'Real Estate Investment Trusts']
-
-    #if ult_dem == 'ITR':
-    #    st.write(f'ITR -> dados acumulados até {ult_dem_data}')
 
 
 ticker_selecionado = ''
