@@ -116,12 +116,11 @@ df_aux = df_aux.style.format(thousands=".",
 
 # EXIBE DATAFRAME
 with row1_1:
+    st.write(df.name.iloc[0])
     st.write(f'Tickers: {df.tickers.iloc[0]}')
     st.write(f'Exchanges: {df.exchanges.iloc[0]}')
     st.write(f'{df.sicDescription.iloc[0]}')
     st.write(f'S&P 500: {df.sp500.iloc[-1]}; Nasdaq 100: {df.nasdaq100.iloc[-1]}')
-    #st.write(f'Nasdaq 100: {df.nasdaq100.iloc[-1]}')
-    #st.write(f'https://www.sec.gov/edgar/browse/?CIK={df.cik.iloc[0]}')
 
 with row1_2:
     st.dataframe(df_aux)
