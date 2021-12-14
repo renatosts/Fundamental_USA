@@ -25,9 +25,11 @@ def getDataProcessamento(url):
     return ultima_atualizacao
 
 f = 'https://raw.githubusercontent.com/renatosts/Fundamental_USA/main/DadosFinanceirosEUA.csv'
+#f = 'DadosFinanceirosEUA.csv'
 financ = getFile(f)
 
 f = 'https://raw.githubusercontent.com/renatosts/Fundamental_USA/main/submissions.csv'
+#f = 'submissions.csv'
 submissions = getFile(f)
 
 url = 'https://raw.githubusercontent.com/renatosts/Fundamental_USA/main/processamento.txt'
@@ -66,9 +68,7 @@ with row1_1:
 
 # FILTERING DATA (limitando aos 11 últimos anos - tail)
 df = financ[financ.tickers == ticker].tail(11).copy()
-print(df)
-
-
+#print(df)
 
 if df.rec_liq.iloc[-1] > 100_000_000:
     conversao_div = 1_000_000
@@ -89,8 +89,8 @@ df.div_total = (df.div_total / conversao_div).astype('int64')
 
 df.fechamento= pd.to_datetime(df.fechamento).dt.strftime('%d/%m/%Y')
 
-df.form[df.form.str.startswith('10-K')] = 'A'
-df.form[df.form.str.startswith('10-Q')] = 'T'
+df.loc[df.form.str.startswith('10-K'), 'form'] = 'A'
+df.loc[df.form.str.startswith('10-Q'), 'form'] = 'T'
 
 df = df.fillna(0)
 
@@ -186,7 +186,7 @@ for tck in ticker_b3:
 
     df_nyse = pdr.DataReader(f'{tck}', data_source='yahoo', start=f'2010-01-01')
     
-    print(df_nyse)
+    #print(df_nyse)
 
     # Cálculo do P/L diário
 
@@ -194,8 +194,6 @@ for tck in ticker_b3:
     df_nyse['Data'] = df_nyse.index
     df_nyse = df_nyse.merge(df, how='left', left_on='Ano', right_on='ano')
     df_nyse['P/L'] = df_nyse.Close / (df_nyse.lucro_liq * conversao_div / qtd_acoes)
-
-
 
     # Limita intervalo do P/L entre -150 e 150
     df_nyse.loc[df_nyse['P/L'] > 150, 'P/L'] = 150
