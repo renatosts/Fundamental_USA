@@ -107,7 +107,7 @@ df_aux = df[['ano', 'form', 'rec_liq', 'lucro_liq', 'margem_liq', 'EBITDA', 'div
 df_aux.reset_index(inplace=True, drop=True) 
 df_aux = df_aux.set_index('ano')
 
-df_aux.columns = ['A/T', 'Net Sale', 'Net Profit', 'Net Rate', 'EBITDA', 'Net Liability', 'Cash', 'Equity', 'Total Liability', 'Form Date', 'Form']
+df_aux.columns = ['A/Q', 'Net Sale', 'Net Profit', 'Net Rate', 'EBITDA', 'Net Liability', 'Cash', 'Equity', 'Total Liability', 'Form Date', 'Form']
 
 df_aux = df_aux.style.format(thousands=".",
                              decimal = ",",
@@ -124,7 +124,7 @@ with row1_1:
 
 with row1_2:
     st.dataframe(df_aux)
-    st.write(f'{conversao}; A/T: Annual/Quarterly Form; https://www.sec.gov/edgar/browse/?CIK={df.cik.iloc[0]}')
+    st.write(f'{conversao}; A/Q: Annual/Quarterly Form; https://www.sec.gov/edgar/browse/?CIK={df.cik.iloc[0]}')
 
 
 
