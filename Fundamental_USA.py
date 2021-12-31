@@ -90,7 +90,7 @@ df.div_total = (df.div_total / conversao_div).astype('int64')
 df.fechamento= pd.to_datetime(df.fechamento).dt.strftime('%d/%m/%Y')
 
 df.loc[df.form.str.startswith('10-K'), 'form'] = 'A'
-df.loc[df.form.str.startswith('10-Q'), 'form'] = 'T'
+df.loc[df.form.str.startswith('10-Q'), 'form'] = 'Q'
 
 df = df.fillna(0)
 
