@@ -10,7 +10,11 @@ import requests
 
 
 # SETTING PAGE CONFIG TO WIDE MODE
-st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(
+    layout='wide',
+    initial_sidebar_state='collapsed',
+    page_icon='app.jpg',
+    page_title='EUA')
 
 # Read CSV
 @st.cache(persist=True)
