@@ -14,7 +14,7 @@ st.set_page_config(
     layout='wide',
     initial_sidebar_state='collapsed',
     page_icon='app.jpg',
-    page_title='EUA')
+    page_title='USA')
 
 # Read CSV
 @st.cache(persist=True)
