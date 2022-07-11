@@ -93,9 +93,6 @@ df.div_total = (df.div_total / conversao_div).astype('int64')
 
 df.fechamento= pd.to_datetime(df.fechamento).dt.strftime('%d/%m/%Y')
 
-df.loc[df.form.str.startswith('10-K'), 'form'] = 'A'
-df.loc[df.form.str.startswith('10-Q'), 'form'] = 'Q'
-
 df = df.fillna(0)
 
 qtd_acoes = df.shares.iloc[0]
@@ -106,12 +103,12 @@ if len(df) > 1:
     if df.ano.iloc[-1] == df.ano.iloc[-2]:
         df.ano.iloc[-1] = df.ano.iloc[-1] + 1
 
-df_aux = df[['ano', 'form', 'rec_liq', 'lucro_liq', 'margem_liq', 'EBITDA', 'div_liq', 'caixa', 'pl', 'div_total', 'fechamento', 'accn']]
+df_aux = df[['ano', 'fp', 'rec_liq', 'lucro_liq', 'margem_liq', 'EBITDA', 'div_liq', 'caixa', 'pl', 'div_total', 'fechamento', 'accn']]
 
 df_aux.reset_index(inplace=True, drop=True) 
 df_aux = df_aux.set_index('ano')
 
-df_aux.columns = ['A/Q', 'Net Sale', 'Net Profit', 'Net Rate', 'EBITDA', 'Net Liability', 'Cash', 'Equity', 'Total Liability', 'Form Date', 'Form']
+df_aux.columns = ['Y/Q', 'Net Sale', 'Net Profit', 'Net Rate', 'EBITDA', 'Net Liability', 'Cash', 'Equity', 'Total Liability', 'Form Date', 'Form']
 
 df_aux = df_aux.style.format(thousands=".",
                              decimal = ",",
@@ -128,7 +125,7 @@ with row1_1:
 
 with row1_2:
     st.dataframe(df_aux)
-    st.write(f'{conversao}; A/Q: Annual/Quarterly Form; https://www.sec.gov/edgar/browse/?CIK={df.cik.iloc[0]}')
+    st.write(f'{conversao}; https://www.sec.gov/edgar/browse/?CIK={df.cik.iloc[0]}')
 
 
 
