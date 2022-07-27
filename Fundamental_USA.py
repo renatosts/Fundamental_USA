@@ -39,7 +39,7 @@ financ = getFile(f)
 
 f_lpa = 'https://raw.githubusercontent.com/renatosts/Fundamental_USA/main/lpa.csv'
 #f_lpa = 'lpa.csv'
-lpa = getLPA(f)
+lpa = getLPA(f_lpa)
 lpa.period = pd.to_datetime(lpa.period)
 
 #f = 'https://raw.githubusercontent.com/renatosts/Fundamental_USA/main/companies.csv'
