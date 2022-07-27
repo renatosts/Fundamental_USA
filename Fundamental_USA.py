@@ -222,22 +222,22 @@ for tck in ticker_b3:
 
     var = (df_nyse["Adj Close"].iloc[-1] / df_nyse["Adj Close"].iloc[-2] - 1) * 100
 
-    with row1_1:
+    #with row1_1:
 
-        fig = go.Figure(data=[
-            go.Scatter(x=df_nyse["Date"], y=df_nyse["Adj Close"], marker=dict(color="darkgoldenrod"))])
-        fig.update_layout(title=f'<b>{tck}     (US$ {df_nyse["Adj Close"].iloc[-1]:,.2f})   <i> {var:,.2f} % </i></b>')
+    fig = go.Figure(data=[
+        go.Scatter(x=df_nyse["Date"], y=df_nyse["Adj Close"], marker=dict(color="darkgoldenrod"))])
+    fig.update_layout(title=f'<b>{tck}     (US$ {df_nyse["Adj Close"].iloc[-1]:,.2f})   <i> {var:,.2f} % </i></b>')
 
-        st.plotly_chart(fig)
+    st.plotly_chart(fig)
 
     
-    with row1_2:
+    #with row1_2:
         
-        fig = go.Figure(data=[
-            go.Scatter(x=df_pl_hist["Date"], y=df_pl_hist["P/L"], marker=dict(color="green"))])
-        fig.update_layout(title=f'<b>Historic P/E ({df_pl_hist["P/L"].iloc[-1]:,.2f}))</b>')
+    fig = go.Figure(data=[
+        go.Scatter(x=df_pl_hist["Date"], y=df_pl_hist["P/L"], marker=dict(color="green"))])
+    fig.update_layout(title=f'<b>Historic P/E ({df_pl_hist["P/L"].iloc[-1]:,.2f}))</b>')
 
-        st.plotly_chart(fig)
+    st.plotly_chart(fig)
     
 
 # Prepara lista de empresas
