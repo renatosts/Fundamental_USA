@@ -19,7 +19,12 @@ st.set_page_config(
 # Read CSV
 @st.cache(persist=True)
 def getFile(f):
-    df = pd.read_csv(f, sep=';', decimal='.', thousands=',')
+    df = pd.read_csv(f, sep=';', decimal=',')
+    return df
+
+@st.cache(persist=True)
+def getLPA(f):
+    df = pd.read_csv(f, sep=';', decimal=',')
     return df
 
 @st.cache(persist=True)
@@ -29,12 +34,17 @@ def getDataProcessamento(url):
     return ultima_atualizacao
 
 f = 'https://raw.githubusercontent.com/renatosts/Fundamental_USA/main/DadosFinanceirosEUA.csv'
-#f = 'DadosFinanceirosEUA.csv'
+f = 'DadosFinanceirosEUA.csv'
 financ = getFile(f)
 
-f = 'https://raw.githubusercontent.com/renatosts/Fundamental_USA/main/submissions.csv'
-#f = 'submissions.csv'
-submissions = getFile(f)
+f = 'https://raw.githubusercontent.com/renatosts/Fundamental_USA/main/DadosFinanceirosEUA.csv'
+f = 'lpa.csv'
+lpa = getLPA(f)
+lpa.period = pd.to_datetime(lpa.period)
+
+#f = 'https://raw.githubusercontent.com/renatosts/Fundamental_USA/main/companies.csv'
+#f = 'companies.csv'
+#companies = getFile(f)
 
 url = 'https://raw.githubusercontent.com/renatosts/Fundamental_USA/main/processamento.txt'
 ultima_atualizacao = getDataProcessamento(url)
@@ -54,6 +64,8 @@ if check_reit:
     financ = financ[financ.sicDescription == 'Real Estate Investment Trusts']
 
 
+qtd_acoes = 1_000_000
+
 ticker_selecionado = ''
 ticker = ''
 empresa = ''
@@ -62,7 +74,7 @@ row1_1, row1_2 = st.columns([4, 7])
 
 with row1_1:
     # Prepara lista de empresas
-    ticker_opcoes =  financ.tickers + ' ; ' + financ.name + ' ; ' + financ.sicDescription
+    ticker_opcoes =  financ.ticker + ' ; ' + financ.name + ' ; ' + financ.sic_title
     ticker_opcoes = ticker_opcoes.drop_duplicates().sort_values()
 
     if len(ticker_opcoes) > 0:
@@ -71,7 +83,9 @@ with row1_1:
         empresa = ticker_selecionado.split(sep=';')[1].strip()
 
 # FILTERING DATA (limitando aos 11 últimos anos - tail)
-df = financ[financ.tickers == ticker].tail(11).copy()
+df = financ[financ.ticker == ticker].tail(11).copy()
+
+cik_selecioado = df.cik.iloc[0]
 #print(df)
 
 if df.rec_liq.iloc[-1] > 100_000_000:
@@ -91,36 +105,35 @@ df.caixa = (df.caixa / conversao_div).astype('int64')
 df.pl = (df.pl / conversao_div).astype('int64')
 df.div_total = (df.div_total / conversao_div).astype('int64')
 
-df.fechamento= pd.to_datetime(df.fechamento).dt.strftime('%d/%m/%Y')
+df.period = pd.to_datetime(df.period).dt.strftime('%d/%m/%Y')
 
 df = df.fillna(0)
 
-qtd_acoes = df.shares.iloc[0]
-
-df['ano'] = df.end.str[0:4].astype(int)
+df['ano'] = df.period.str[6:10].astype(int)
 
 if len(df) > 1:
     if df.ano.iloc[-1] == df.ano.iloc[-2]:
         df.ano.iloc[-1] = df.ano.iloc[-1] + 1
 
-df_aux = df[['ano', 'fp', 'rec_liq', 'lucro_liq', 'margem_liq', 'EBITDA', 'div_liq', 'caixa', 'pl', 'div_total', 'fechamento', 'accn']]
+df_aux = df[['ano', 'fp', 'rec_liq', 'lucro_liq', 'margem_liq', 'EBITDA', 'div_liq', 'caixa', 'pl', 'div_total', 'LPA', 'period', 'adsh']]
 
 df_aux.reset_index(inplace=True, drop=True) 
 df_aux = df_aux.set_index('ano')
 
-df_aux.columns = ['Y/Q', 'Net Sale', 'Net Profit', 'Net Rate', 'EBITDA', 'Net Liability', 'Cash', 'Equity', 'Total Liability', 'Form Date', 'Form']
+df_aux.columns = ['Y/Q', 'Net Sale', 'Net Profit', 'Net Rate', 'EBITDA', 'Net Liability', 'Cash', 'Equity', 'Total Liability', 'EPS', 'Form Date', 'Form']
 
 df_aux = df_aux.style.format(thousands=".",
                              decimal = ",",
                              formatter={'Net Rate': '{:.2f}',
-                                        'Net Liability': '{:.2f}'})
+                                        'Net Liability': '{:.2f}',
+                                        'EPS': '{:.2f}'})
 
 # EXIBE DATAFRAME
 with row1_1:
     st.write(df.name.iloc[0])
-    st.write(f'Tickers: {df.tickers.iloc[0]}')
-    st.write(f'Exchanges: {df.exchanges.iloc[0]}')
-    st.write(f'{df.sicDescription.iloc[0]}')
+    st.write(f'Ticker: {df.ticker.iloc[0]}')
+    #st.write(f'Exchanges: {df.exchanges.iloc[0]}')
+    st.write(f'{df.sic_title.iloc[0]}')
     st.write(f'S&P 500: {df.sp500.iloc[-1]}; Nasdaq 100: {df.nasdaq100.iloc[-1]}')
 
 with row1_2:
@@ -177,24 +190,27 @@ st.plotly_chart(fig, use_container_width=True)
 
 # Cotações
 ticker_b3 = []
+df_lpa = lpa[lpa.cik == cik_selecioado].copy()
+
 if len(df) > 0:
-    ticker_b3 = df.tickers[df.tickers == ticker].iloc[0].split(sep=',')
+    ticker_b3 = df.ticker[df.ticker == ticker].iloc[0].split(sep=',')
 
 row1_1, row1_2 = st.columns([1, 1])
 
 
 for tck in ticker_b3:
 
-    df_nyse = pdr.DataReader(f'{tck}', data_source='yahoo', start=f'2010-01-01')
+    df_nyse = pdr.DataReader(f'{tck}', data_source='yahoo', start=f'2018-01-01').reset_index()
     
     #print(df_nyse)
 
     # Cálculo do P/L diário
 
-    df_nyse['Ano'] = df_nyse.index.year
-    df_nyse['Data'] = df_nyse.index
-    df_nyse = df_nyse.merge(df, how='left', left_on='Ano', right_on='ano')
-    df_nyse['P/L'] = df_nyse.Close / (df_nyse.lucro_liq * conversao_div / qtd_acoes)
+    #df_nyse['Ano'] = df_nyse.index.year
+    #df_nyse['Data'] = df_nyse.index
+    df_nyse = df_nyse.merge(df_lpa, how='left', left_on='Date', right_on='period')
+    df_nyse.lpa = df_nyse.lpa.ffill()
+    df_nyse['P/L'] = df_nyse['Adj Close'] / df_nyse['lpa']
 
     # Limita intervalo do P/L entre -150 e 150
     df_nyse.loc[df_nyse['P/L'] > 150, 'P/L'] = 150
@@ -208,7 +224,7 @@ for tck in ticker_b3:
     with row1_1:
 
         fig = go.Figure(data=[
-            go.Scatter(x=df_nyse["Data"], y=df_nyse["Adj Close"], marker=dict(color="darkgoldenrod"))])
+            go.Scatter(x=df_nyse["Date"], y=df_nyse["Adj Close"], marker=dict(color="darkgoldenrod"))])
         fig.update_layout(title=f'<b>{tck}     (US$ {df_nyse["Adj Close"].iloc[-1]:,.2f})   <i> {var:,.2f} % </i></b>')
 
         st.plotly_chart(fig)
@@ -217,31 +233,32 @@ for tck in ticker_b3:
     with row1_2:
         
         fig = go.Figure(data=[
-            go.Scatter(x=df_pl_hist["Data"], y=df_pl_hist["P/L"], marker=dict(color="green"))])
-        fig.update_layout(title=f'<b>Historic P/E ({df_pl_hist["P/L"].iloc[-1]:,.2f})    (Shares: {qtd_acoes:,.0f})</b>')
+            go.Scatter(x=df_pl_hist["Date"], y=df_pl_hist["P/L"], marker=dict(color="green"))])
+        fig.update_layout(title=f'<b>Historic P/E ({df_pl_hist["P/L"].iloc[-1]:,.2f}))</b>')
 
         st.plotly_chart(fig)
     
 
 # Prepara lista de empresas
-df_submissions = submissions[['name', 'tickers', 'exchanges', 'sicDescription', 'fiscalYearEnd', 'cik', 'sp500', 'nasdaq100']].copy()
+companies = financ.drop_duplicates(['name', 'ticker', 'sic_title', 'fye', 'cik', 'sp500', 'nasdaq100'])[
+    ['name', 'ticker', 'sic_title', 'fye', 'cik', 'sp500', 'nasdaq100']]
 
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
     sub_check_sp500 = st.checkbox("S&P 500", value=True)
     if sub_check_sp500:
-        df_submissions = df_submissions[df_submissions.sp500]
+        companies = companies[companies.sp500]
 
 with col2:
     sub_check_nasdaq100 = st.checkbox("Nasdaq 100")
     if sub_check_nasdaq100:
-        df_submissions = df_submissions[df_submissions.nasdaq100]
+        companies = companies[companies.nasdaq100]
 
 
-sub_description =  ['(ALL)'] + submissions.sicDescription.drop_duplicates().sort_values().to_list()
+sub_description =  ['(ALL)'] + companies.sic_title.drop_duplicates().sort_values().to_list()
 sub_description_selecionado = st.selectbox('Sector:', sub_description )
 if sub_description_selecionado != '(ALL)':
-    df_submissions = df_submissions[df_submissions.sicDescription == sub_description_selecionado]
+    companies = companies[companies.sic_title == sub_description_selecionado]
 
-st.dataframe(df_submissions)
+st.dataframe(companies)
