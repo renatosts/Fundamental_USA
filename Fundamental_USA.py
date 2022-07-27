@@ -23,8 +23,8 @@ def getFile(f):
     return df
 
 @st.cache(persist=True)
-def getLPA(f_lpa):
-    df = pd.read_csv(f_lpa, sep=';', decimal=',')
+def getLPA(f):
+    df = pd.read_csv(f, sep=';', decimal=',')
     return df
 
 @st.cache(persist=True)
@@ -37,10 +37,9 @@ f = 'https://raw.githubusercontent.com/renatosts/Fundamental_USA/main/DadosFinan
 #f = 'DadosFinanceirosEUA.csv'
 financ = getFile(f)
 
-f_lpa = 'https://raw.githubusercontent.com/renatosts/Fundamental_USA/main/lpa.csv'
-#f_lpa = 'lpa.csv'
-lpa = getLPA(f_lpa)
-lpa.period = pd.to_datetime(lpa.period)
+f = 'https://raw.githubusercontent.com/renatosts/Fundamental_USA/main/lpa.csv'
+#f = 'lpa.csv'
+lpa = getLPA(f)
 
 #f = 'https://raw.githubusercontent.com/renatosts/Fundamental_USA/main/companies.csv'
 #f = 'companies.csv'
@@ -190,7 +189,9 @@ st.plotly_chart(fig, use_container_width=True)
 
 # Cotações
 ticker_b3 = []
+
 df_lpa = lpa[lpa.cik == cik_selecioado].copy()
+df_lpa.period = pd.to_datetime(df_lpa.period)
 
 if len(df) > 0:
     ticker_b3 = df.ticker[df.ticker == ticker].iloc[0].split(sep=',')
