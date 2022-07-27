@@ -34,11 +34,11 @@ def getDataProcessamento(url):
     return ultima_atualizacao
 
 f = 'https://raw.githubusercontent.com/renatosts/Fundamental_USA/main/DadosFinanceirosEUA.csv'
-f = 'DadosFinanceirosEUA.csv'
+#f = 'DadosFinanceirosEUA.csv'
 financ = getFile(f)
 
 f = 'https://raw.githubusercontent.com/renatosts/Fundamental_USA/main/DadosFinanceirosEUA.csv'
-f = 'lpa.csv'
+#f = 'lpa.csv'
 lpa = getLPA(f)
 lpa.period = pd.to_datetime(lpa.period)
 
