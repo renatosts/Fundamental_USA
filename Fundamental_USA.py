@@ -217,7 +217,7 @@ for tck in ticker_b3:
     df_nyse.loc[df_nyse['P/L'] > 150, 'P/L'] = 150
     df_nyse.loc[df_nyse['P/L'] < -150, 'P/L'] = -150
 
-    df_pl_hist = df_nyse.tail(500)
+    df_pl_hist = df_nyse.tail(1000)
     
 
     var = (df_nyse["Adj Close"].iloc[-1] / df_nyse["Adj Close"].iloc[-2] - 1) * 100
