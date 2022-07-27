@@ -24,7 +24,7 @@ def getFile(f):
 
 @st.cache(persist=True)
 def getLPA(f_lpa):
-    df = pd.read_csv(f, sep=';', decimal=',')
+    df = pd.read_csv(f_lpa, sep=';', decimal=',')
     return df
 
 @st.cache(persist=True)
