@@ -23,7 +23,7 @@ def getFile(f):
     return df
 
 @st.cache(persist=True)
-def getLPA(f):
+def getLPA(f_lpa):
     df = pd.read_csv(f, sep=';', decimal=',')
     return df
 
@@ -37,8 +37,8 @@ f = 'https://raw.githubusercontent.com/renatosts/Fundamental_USA/main/DadosFinan
 #f = 'DadosFinanceirosEUA.csv'
 financ = getFile(f)
 
-f = 'https://raw.githubusercontent.com/renatosts/Fundamental_USA/main/lpa.csv'
-#f = 'lpa.csv'
+f_lpa = 'https://raw.githubusercontent.com/renatosts/Fundamental_USA/main/lpa.csv'
+#f_lpa = 'lpa.csv'
 lpa = getLPA(f)
 lpa.period = pd.to_datetime(lpa.period)
 
