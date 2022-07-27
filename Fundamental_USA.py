@@ -196,7 +196,7 @@ df_lpa.period = pd.to_datetime(df_lpa.period)
 if len(df) > 0:
     ticker_b3 = df.ticker[df.ticker == ticker].iloc[0].split(sep=',')
 
-row1_1, row1_2 = st.columns([1, 1])
+#row1_1, row1_2 = st.columns([1, 1])
 
 
 for tck in ticker_b3:
