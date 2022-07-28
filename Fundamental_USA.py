@@ -41,10 +41,6 @@ f = 'https://raw.githubusercontent.com/renatosts/Fundamental_USA/main/lpa.csv'
 #f = 'lpa.csv'
 lpa = getLPA(f)
 
-#f = 'https://raw.githubusercontent.com/renatosts/Fundamental_USA/main/companies.csv'
-#f = 'companies.csv'
-#companies = getFile(f)
-
 url = 'https://raw.githubusercontent.com/renatosts/Fundamental_USA/main/processamento.txt'
 ultima_atualizacao = getDataProcessamento(url)
 
