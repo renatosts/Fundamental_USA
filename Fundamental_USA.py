@@ -239,6 +239,8 @@ for tck in ticker_b3:
 companies = financ.drop_duplicates(['name', 'ticker', 'sic_title', 'fye', 'cik', 'sp500', 'nasdaq100'])[
     ['name', 'ticker', 'sic_title', 'fye', 'cik', 'sp500', 'nasdaq100']]
 
+companies = companies.sort_values('name')
+
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
