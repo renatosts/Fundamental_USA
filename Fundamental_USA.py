@@ -63,8 +63,6 @@ if check_reit:
     financ = financ[financ.sicDescription == 'Real Estate Investment Trusts']
 
 
-qtd_acoes = 1_000_000
-
 ticker_selecionado = ''
 ticker = ''
 empresa = ''
@@ -201,24 +199,25 @@ row1_1, row1_2 = st.columns([1, 1])
 
 for tck in ticker_b3:
 
-    df_nyse = pdr.DataReader(f'{tck}', data_source='yahoo', start=f'2018-01-01').reset_index()
-    
-    #print(df_nyse)
-
     # Cálculo do P/L diário
 
-    #df_nyse['Ano'] = df_nyse.index.year
-    #df_nyse['Data'] = df_nyse.index
+    df_datas = pd.DataFrame(pd.date_range(start='2018-01-01', end='2022-07-27'), columns=['Date'])
+
+    df_nyse = pdr.DataReader(f'{tck}', data_source='yahoo', start=f'2018-01-01').reset_index()
+    
+    df_nyse = df_datas.merge(df_nyse, on='Date', how='left' )
+
     df_nyse = df_nyse.merge(df_lpa, how='left', left_on='Date', right_on='period')
-    df_nyse.lpa = df_nyse.lpa.ffill()
+    df_nyse = df_nyse.ffill()
     df_nyse['P/L'] = df_nyse['Adj Close'] / df_nyse['lpa']
 
     # Limita intervalo do P/L entre -150 e 150
-    df_nyse.loc[df_nyse['P/L'] > 150, 'P/L'] = 150
-    df_nyse.loc[df_nyse['P/L'] < -150, 'P/L'] = -150
+    #df_nyse.loc[df_nyse['P/L'] > 150, 'P/L'] = 150
+    #df_nyse.loc[df_nyse['P/L'] < -150, 'P/L'] = -150
 
     df_pl_hist = df_nyse.tail(1000)
     
+    print(df_pl_hist)
 
     var = (df_nyse["Adj Close"].iloc[-1] / df_nyse["Adj Close"].iloc[-2] - 1) * 100
 
@@ -234,8 +233,8 @@ for tck in ticker_b3:
     with row1_2:
         
         fig = go.Figure(data=[
-            go.Scatter(x=df_pl_hist["Date"], y=df_pl_hist["P/L"], marker=dict(color="green"))])
-        fig.update_layout(title=f'<b>Historic P/E ({df_pl_hist["P/L"].iloc[-1]:,.2f}))</b>')
+            go.Scatter(x=df_nyse["Date"], y=df_nyse["P/L"], marker=dict(color="green"))])
+        fig.update_layout(title=f'<b>Historic P/E ({df_nyse["P/L"].iloc[-1]:,.2f})</b>')
 
         st.plotly_chart(fig)
     
