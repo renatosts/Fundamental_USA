@@ -78,7 +78,7 @@ with row1_1:
 # FILTERING DATA (limitando aos 11 últimos anos - tail)
 df = financ[financ.ticker == ticker].tail(11).copy()
 
-cik_selecioado = df.cik.iloc[0]
+cik_selecionado = df.cik.iloc[0]
 #print(df)
 
 if df.rec_liq.iloc[-1] > 100_000_000:
@@ -184,7 +184,7 @@ st.plotly_chart(fig, use_container_width=True)
 # Cotações
 ticker_b3 = []
 
-df_lpa = lpa[lpa.cik == cik_selecioado].copy()
+df_lpa = lpa[lpa.cik == cik_selecionado].copy()
 df_lpa.period = pd.to_datetime(df_lpa.period)
 
 if len(df) > 0:
