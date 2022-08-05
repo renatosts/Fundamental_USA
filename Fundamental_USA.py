@@ -1,3 +1,4 @@
+from datetime import datetime
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -193,13 +194,15 @@ if len(df) > 0:
 
 row1_1, row1_2 = st.columns([1, 1])
 
+dt_hoje = datetime.today().strftime('%Y-%m-%d')
+
 for tck in ticker_b3:
 
     # Cálculo do P/L diário
 
-    df_datas = pd.DataFrame(pd.date_range(start='2018-01-01', end='2022-07-27'), columns=['Date'])
+    df_datas = pd.DataFrame(pd.date_range(start='2018-01-01', end=dt_hoje), columns=['Date'])
 
-    df_nyse = pdr.DataReader(f'{tck}', data_source='yahoo', start=f'2018-01-01').reset_index()
+    df_nyse = pdr.DataReader(f'{tck}', data_source='yahoo', start=f'2020-01-01').reset_index()
     
     df_nyse = df_datas.merge(df_nyse, on='Date', how='left' )
 
