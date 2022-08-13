@@ -208,7 +208,7 @@ for tck in ticker_b3:
 
     df_nyse = df_nyse.merge(df_lpa, how='left', left_on='Date', right_on='period')
     df_nyse = df_nyse.ffill()
-    df_nyse['P/L'] = df_nyse['Adj Close'] / df_nyse['lpa']
+    df_nyse['P/L'] = df_nyse['Adj Close'] / df_nyse['LPA']
 
     # Limita intervalo do P/L entre -150 e 150
     #df_nyse.loc[df_nyse['P/L'] > 150, 'P/L'] = 150
