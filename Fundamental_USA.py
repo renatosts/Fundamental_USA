@@ -138,7 +138,7 @@ df_aux = df_aux.style.format(thousands=".",
 with row1_1:
     st.write(df.name.iloc[0])
     st.write(f'Ticker: {df.ticker.iloc[0]}')
-    st.write(f'{df.cityba.iloc[0]} {df.countryba.iloc[0]}')
+    st.write(f'{df.cityba.iloc[0]} ({df.countryba.iloc[0]})')
     #st.write(f'Exchanges: {df.exchanges.iloc[0]}')
     st.write(f'{df.sic_title.iloc[0]}')
     st.write(f'S&P 500: {df.sp500.iloc[-1]}; Nasdaq 100: {df.nasdaq100.iloc[-1]}')
