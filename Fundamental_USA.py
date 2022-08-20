@@ -132,7 +132,7 @@ df_aux = df_aux.style.format(thousands=".",
                              decimal = ",",
                              formatter={'Net Rate': '{:.1%}',
                                         'Net Liability': '{:.1f}',
-                                        'EPS': '{:.2f}'}).applymap(define_color, subset=['Net Profit', 'Net Rate', 'EBITDA', 'Net Liability'])
+                                        'EPS': '{:.2f}'}).applymap(define_color, subset=['Net Profit', 'Net Rate', 'EBITDA', 'Net Liability', 'EPS'])
 
 # EXIBE DATAFRAME
 with row1_1:
