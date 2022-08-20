@@ -82,15 +82,17 @@ df = financ[financ.ticker == ticker].tail(11).copy()
 cik_selecionado = df.cik.iloc[0]
 #print(df)
 
+moeda = df.uom.iloc[-1]
+
 if df.rec_liq.iloc[-1] > 100_000_000:
     conversao_div = 1_000_000
-    conversao = 'US$ in millions'
+    conversao = f'{moeda} in millions'
 elif df.rec_liq.iloc[-1] > 100_000:
     conversao_div = 1_000
-    conversao = 'US$ in thousands'
+    conversao = f'{moeda} in thousands'
 else:
     conversao_div = 1
-    conversao = 'US$'
+    conversao = moeda
 
 df.rec_liq = (df.rec_liq / conversao_div).astype('int64')
 df.lucro_liq = (df.lucro_liq / conversao_div).astype('int64')
