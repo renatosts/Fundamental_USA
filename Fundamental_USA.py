@@ -10,6 +10,16 @@ import yfinance as yf
 import requests
 
 
+def define_color(val):
+    if val < 0:
+        color = 'red'
+    elif val > 0:
+        color = 'green'
+    else:
+        color = 'gray'
+    return 'color: %s' % color
+
+
 # SETTING PAGE CONFIG TO WIDE MODE
 st.set_page_config(
     layout='wide',
@@ -120,9 +130,9 @@ df_aux.columns = ['Y/Q', 'Net Sale', 'Net Profit', 'Net Rate', 'EBITDA', 'Net Li
 
 df_aux = df_aux.style.format(thousands=".",
                              decimal = ",",
-                             formatter={'Net Rate': '{:.2f}',
-                                        'Net Liability': '{:.2f}',
-                                        'EPS': '{:.2f}'})
+                             formatter={'Net Rate': '{:.1f}',
+                                        'Net Liability': '{:.1f}',
+                                        'EPS': '{:.2f}'}).applymap(define_color, subset=['Net Profit', 'Net Rate', 'EBITDA', 'Net Liability'])
 
 # EXIBE DATAFRAME
 with row1_1:
@@ -158,7 +168,7 @@ fig.add_trace(
     secondary_y=False,
     row=1, col=2)
 fig.add_trace(
-    go.Scatter(x=df.ano, y=df.margem_liq, marker=dict(color="crimson"), name='Net Rate'), 
+    go.Scatter(x=df.ano, y=df.margem_liq*100, marker=dict(color="crimson"), name='Net Rate'), 
     secondary_y=True,
     row=1, col=2)
 
