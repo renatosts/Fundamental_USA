@@ -131,7 +131,7 @@ df_aux.columns = ['Y/Q', 'Net Sale', 'Net Profit', 'Net Rate', 'EBITDA', 'Net Li
 df_aux = df_aux.style.format(thousands=".",
                              decimal = ",",
                              formatter={'Net Rate': '{:.1%}',
-                                        'Net Liability': '{:.1%}',
+                                        'Net Liability': '{:.1f}',
                                         'EPS': '{:.2f}'}).applymap(define_color, subset=['Net Profit', 'Net Rate', 'EBITDA', 'Net Liability'])
 
 # EXIBE DATAFRAME
