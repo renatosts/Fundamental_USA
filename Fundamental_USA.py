@@ -56,16 +56,18 @@ ultima_atualizacao = getDataProcessamento(url)
 st.sidebar.write(f"Last update: {ultima_atualizacao}")
 
 check_sp500 = st.sidebar.checkbox("Only S&P 500", value=True)
-if check_sp500:
-    financ = financ[financ.sp500]
 
 check_nasdaq100 = st.sidebar.checkbox("Only Nasdaq 100")
-if check_nasdaq100:
-    financ = financ[financ.nasdaq100]
 
 check_reit = st.sidebar.checkbox("Only REIT")
+
 if check_reit:
-    financ = financ[financ.sicDescription == 'Real Estate Investment Trusts']
+    financ = financ[financ.sic_title == 'REAL ESTATE INVESTMENT TRUSTS']
+else:
+    if check_sp500:
+        financ = financ[financ.sp500]
+    if check_nasdaq100:
+        financ = financ[financ.nasdaq100]
 
 
 ticker_selecionado = ''
