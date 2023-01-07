@@ -2,10 +2,8 @@ from datetime import datetime
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import matplotlib.pyplot as plt
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
-from pandas_datareader import data as pdr
 import yfinance as yf
 import requests
 
@@ -213,9 +211,9 @@ for tck in ticker_b3:
 
     # Cálculo do P/L diário
 
-    df_datas = pd.DataFrame(pd.date_range(start='2018-01-01', end=dt_hoje), columns=['Date'])
+    df_datas = pd.DataFrame(pd.date_range(start='2012-01-01', end=dt_hoje), columns=['Date'])
 
-    df_nyse = pdr.DataReader(f'{tck}', data_source='yahoo', start=f'2020-01-01').reset_index()
+    df_nyse = yf.download(f'{tck}', start=f'2012-01-01').reset_index()
     
     df_nyse = df_datas.merge(df_nyse, on='Date', how='left' )
 
@@ -242,11 +240,11 @@ for tck in ticker_b3:
         st.plotly_chart(fig)
 
     
-    with row1_2:
+    #with row1_2:
         
         fig = go.Figure(data=[
-            go.Scatter(x=df_nyse["Date"], y=df_nyse["P/L"], marker=dict(color="green"))])
-        fig.update_layout(title=f'<b>Historic P/E ({df_nyse["P/L"].iloc[-1]:,.2f})</b>')
+            go.Scatter(x=df_pl_hist["Date"], y=df_pl_hist["P/L"], marker=dict(color="green"))])
+        fig.update_layout(title=f'<b>Historic P/E ({df_pl_hist["P/L"].iloc[-1]:,.2f})</b>')
 
         st.plotly_chart(fig)
     
