@@ -26,17 +26,17 @@ st.set_page_config(
     page_title='USA')
 
 # Read CSV
-@st.cache(persist=True)
+@st.cache_data(persist=True)
 def getFile(f):
     df = pd.read_csv(f, sep=';', decimal=',')
     return df
 
-@st.cache(persist=True)
+@st.cache_data(persist=True)
 def getLPA(f):
     df = pd.read_csv(f, sep=';', decimal=',')
     return df
 
-@st.cache(persist=True)
+@st.cache_data(persist=True)
 def getDataProcessamento(url):
     response = requests.get(url)
     ultima_atualizacao = response.text
