@@ -26,17 +26,17 @@ st.set_page_config(
     page_title='USA')
 
 # Read CSV
-@st.cache(persist=True)
+@st.cache_data(persist=True)
 def getFile(f):
     df = pd.read_csv(f, sep=';', decimal=',')
     return df
 
-@st.cache(persist=True)
+@st.cache_data(persist=True)
 def getLPA(f):
     df = pd.read_csv(f, sep=';', decimal=',')
     return df
 
-@st.cache(persist=True)
+@st.cache_data(persist=True)
 def getDataProcessamento(url):
     response = requests.get(url)
     ultima_atualizacao = response.text
@@ -132,7 +132,7 @@ df_aux = df_aux.style.format(thousands=".",
                              decimal = ",",
                              formatter={'Net Rate': '{:.1%}',
                                         'Net Liability': '{:.1f}',
-                                        'EPS': '{:.2f}'}).applymap(define_color, subset=['Net Profit', 'Net Rate', 'EBITDA', 'Net Liability', 'EPS'])
+                                        'EPS': '{:.2f}'}).map(define_color, subset=['Net Profit', 'Net Rate', 'EBITDA', 'Net Liability', 'EPS'])
 
 # EXIBE DATAFRAME
 with row1_1:
